@@ -1,38 +1,9 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard VIP — Entrar</title>
-</head>
-<body>
-
-<h2>Login</h2>
-<form id="loginForm">
-<input id="loginEmail" placeholder="Email" required>
-<input id="loginPass" type="password" placeholder="Senha" required>
-<button type="submit">Entrar</button>
-</form>
-
-<h2>Criar Conta</h2>
-<form id="signupForm">
-<input id="signupName" placeholder="Nome" required>
-<input id="signupEmail" placeholder="Email" required>
-<input id="signupPass" type="password" placeholder="Senha" required>
-<button type="submit">Criar Conta</button>
-</form>
-
-<button id="forgotBtn">Esqueci a senha</button>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
   getAuth,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  sendPasswordResetEmail,
-  updateProfile,
-  onAuthStateChanged
+  onAuthStateChanged,
+  signOut
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -44,58 +15,29 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// AUTO LOGIN
+// PROTEÇÃO
 onAuthStateChanged(auth, (user) => {
-  if (user) window.location.href = "/dashboard.html";
-});
+  if (!user) {
+    window.location.href = "/";
+  } else {
+    window.__USER__ = user;
 
-// LOGIN
-document.getElementById("loginForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  try {
-    await signInWithEmailAndPassword(
-      auth,
-      loginEmail.value,
-      loginPass.value
-    );
-    window.location.href = "/dashboard.html";
-  } catch (err) {
-    alert(err.message);
+    document.getElementById('loading').classList.add('hidden');
+    document.getElementById('app').classList.add('ready');
+
+    const displayName = user.displayName || user.email;
+    const initial = displayName.charAt(0).toUpperCase();
+
+    document.getElementById('userAvatar').textContent = initial;
+    document.getElementById('userName').textContent = displayName;
+
+    startDashboard();
   }
 });
 
-// CADASTRO
-document.getElementById("signupForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  try {
-    const userCred = await createUserWithEmailAndPassword(
-      auth,
-      signupEmail.value,
-      signupPass.value
-    );
-
-    await updateProfile(userCred.user, {
-      displayName: signupName.value
-    });
-
-    alert("Conta criada com sucesso!");
-  } catch (err) {
-    alert(err.message);
-  }
-});
-
-// RECUPERAR SENHA
-document.getElementById("forgotBtn").addEventListener("click", async () => {
-  if (!loginEmail.value) return alert("Digite o email");
-
-  try {
-    await sendPasswordResetEmail(auth, loginEmail.value);
-    alert("Email de recuperação enviado!");
-  } catch (err) {
-    alert(err.message);
-  }
+// LOGOUT
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  await signOut(auth);
+  window.location.href = "/";
 });
 </script>
-
-</body>
-</html>

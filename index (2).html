@@ -1,25 +1,12 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>Dashboard</title>
-</head>
-<body>
-
-<div id="loading">Carregando...</div>
-
-<div id="app" style="display:none;">
-<h1>Dashboard VIP</h1>
-<p>Usuário: <span id="userName"></span></p>
-<button id="logoutBtn">Sair</button>
-</div>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
   getAuth,
-  onAuthStateChanged,
-  signOut
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  updateProfile,
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -31,24 +18,70 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// PROTEÇÃO
+// ELEMENTOS
+const msgEl = document.getElementById('msg');
+const loginForm = document.getElementById('loginForm');
+const signupForm = document.getElementById('signupForm');
+
+// MSG
+function showMsg(text, type) {
+  msgEl.textContent = text;
+  msgEl.className = 'msg show ' + type;
+}
+
+// AUTO LOGIN
 onAuthStateChanged(auth, (user) => {
-  if (!user) {
-    window.location.href = "/";
-  } else {
-    document.getElementById("loading").style.display = "none";
-    document.getElementById("app").style.display = "block";
-    document.getElementById("userName").textContent =
-      user.displayName || user.email;
+  if (user) window.location.href = "/dashboard.html";
+});
+
+// LOGIN
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  try {
+    await signInWithEmailAndPassword(
+      auth,
+      document.getElementById("loginEmail").value,
+      document.getElementById("loginPass").value
+    );
+    window.location.href = "/dashboard.html";
+  } catch (err) {
+    console.log(err);
+    showMsg(err.code, "error");
   }
 });
 
-// LOGOUT
-logoutBtn.addEventListener("click", async () => {
-  await signOut(auth);
-  window.location.href = "/";
+// CADASTRO
+signupForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  try {
+    const userCred = await createUserWithEmailAndPassword(
+      auth,
+      document.getElementById("signupEmail").value,
+      document.getElementById("signupPass").value
+    );
+
+    await updateProfile(userCred.user, {
+      displayName: document.getElementById("signupName").value
+    });
+
+    showMsg("Conta criada com sucesso!", "info");
+  } catch (err) {
+    console.log(err);
+    showMsg(err.code, "error");
+  }
+});
+
+// RECUPERAR SENHA
+document.getElementById("forgotBtn").addEventListener("click", async () => {
+  const email = document.getElementById("loginEmail").value;
+  if (!email) return showMsg("Digite o email primeiro", "error");
+
+  try {
+    await sendPasswordResetEmail(auth, email);
+    showMsg("Email de recuperação enviado!", "info");
+  } catch (err) {
+    console.log(err);
+    showMsg(err.code, "error");
+  }
 });
 </script>
-
-</body>
-</html>
