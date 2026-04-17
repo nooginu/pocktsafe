@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard VIP — Entrar</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c10;
+    --bg2: #111318;
+    --bg3: #181c24;
+    --border: #1f2535;
+    --gold: #c9a84c;
+    --gold2: #e8c96a;
+    --green: #00e096;
+    --red: #ff4d6d;
+    --blue: #3b82f6;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --card: #13161e;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background-image:
+      radial-gradient(ellipse at 10% 20%, rgba(201,168,76,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 80%, rgba(59,130,246,0.06) 0%, transparent 50%);
+  }
+  .auth-shell { width: 100%; max-width: 420px; }
+  .brand { text-align: center; margin-bottom: 24px; }
+  .brand h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.9rem; font-weight: 700;
+    letter-spacing: 4px; color: var(--gold2);
+    text-transform: uppercase;
+  }
+  .brand p {
+    font-size: 0.72rem; letter-spacing: 2px;
+    color: var(--muted); text-transform: uppercase; margin-top: 4px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 26px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .tabs {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    border-radius: 8px; padding: 4px; margin-bottom: 22px;
+  }
+  .tab {
+    font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    font-size: 0.82rem; letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 9px 0; border: none; background: transparent;
+    color: var(--muted); cursor: pointer; border-radius: 5px; transition: all .2s;
+  }
+  .tab.active { background: rgba(201,168,76,0.15); color: var(--gold2); }
+  .form { display: none; flex-direction: column; gap: 14px; }
+  .form.active { display: flex; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label {
+    font-family: 'Rajdhani', sans-serif; font-size: 0.68rem;
+    font-weight: 700; letter-spacing: 1.5px; color: var(--muted); text-transform: uppercase;
+  }
+  .field input {
+    background: rgba(0,0,0,0.4); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem; padding: 11px 13px; outline: none; transition: border-color .2s;
+  }
+  .field input:focus { border-color: rgba(201,168,76,0.5); }
+  .btn {
+    font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    font-size: 0.9rem; letter-spacing: 1.5px; text-transform: uppercase;
+    border: none; border-radius: 6px; padding: 12px 16px;
+    cursor: pointer; transition: all .2s; background: var(--gold); color: #000;
+  }
+  .btn:hover:not(:disabled) {
+    background: var(--gold2); transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(201,168,76,0.35);
+  }
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .msg {
+    font-family: 'Rajdhani', sans-serif; font-size: 0.82rem;
+    letter-spacing: 0.5px; padding: 10px 12px; border-radius: 6px; display: none;
+  }
+  .msg.show { display: block; }
+  .msg.error { background: rgba(255,77,109,0.12); color: var(--red); border: 1px solid rgba(255,77,109,0.3); }
+  .msg.info { background: rgba(0,224,150,0.1); color: var(--green); border: 1px solid rgba(0,224,150,0.3); }
+  .forgot {
+    background: none; border: none; color: var(--muted);
+    font-family: 'Rajdhani', sans-serif; font-size: 0.78rem;
+    letter-spacing: 1px; cursor: pointer; text-align: right; padding: 0; margin-top: -6px;
+  }
+  .forgot:hover { color: var(--gold2); }
+  .footer {
+    text-align: center; margin-top: 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem; color: var(--muted); letter-spacing: 1px;
+  }
+  .spinner {
+    display: inline-block; width: 12px; height: 12px;
+    border: 2px solid rgba(0,0,0,0.3); border-top-color: #000;
+    border-radius: 50%; animation: spin 0.6s linear infinite;
+    margin-right: 6px; vertical-align: -1px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="auth-shell">
+  <div class="brand">
+    <h1>Dashboard VIP</h1>
+    <p>Controle Financeiro — Acesso Privado</p>
+  </div>
+  <div class="card">
+    <div class="tabs">
+      <button class="tab active" data-tab="login" type="button">Entrar</button>
+      <button class="tab" data-tab="signup" type="button">Criar Conta</button>
+    </div>
+
+    <div id="msg" class="msg"></div>
+
+    <form id="loginForm" class="form active" autocomplete="on">
+      <div class="field">
+        <label for="loginEmail">E-mail</label>
+        <input id="loginEmail" type="email" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="loginPass">Senha</label>
+        <input id="loginPass" type="password" autocomplete="current-password" required minlength="6">
+      </div>
+      <button type="button" class="forgot" id="forgotBtn">Esqueceu a senha?</button>
+      <button type="submit" class="btn" id="loginBtn">Entrar</button>
+    </form>
+
+    <form id="signupForm" class="form" autocomplete="on">
+      <div class="field">
+        <label for="signupName">Nome</label>
+        <input id="signupName" type="text" autocomplete="name" required>
+      </div>
+      <div class="field">
+        <label for="signupEmail">E-mail</label>
+        <input id="signupEmail" type="email" autocomplete="email" required>
+      </div>
+      <div class="field">
+        <label for="signupPass">Senha (mínimo 6 caracteres)</label>
+        <input id="signupPass" type="password" autocomplete="new-password" required minlength="6">
+      </div>
+      <button type="submit" class="btn" id="signupBtn">Criar conta</button>
+    </form>
+  </div>
+  <div class="footer">AO VIVO · CONEXÃO SEGURA</div>
+</div>
+
+<script type="module">
+  import {
+    login, signup, getUser, requestPasswordRecovery, handleAuthCallback,
+    updateUser, AuthError, MissingIdentityError
+  } from 'https://esm.sh/@netlify/identity@latest';
+
+  const msgEl = document.getElementById('msg');
+  const loginForm = document.getElementById('loginForm');
+  const signupForm = document.getElementById('signupForm');
+  const loginBtn = document.getElementById('loginBtn');
+  const signupBtn = document.getElementById('signupBtn');
+
+  function showMsg(text, kind) { msgEl.textContent = text; msgEl.className = 'msg show ' + kind; }
+  function clearMsg() { msgEl.className = 'msg'; msgEl.textContent = ''; }
+
+  document.querySelectorAll('.tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const target = btn.dataset.tab;
+      loginForm.classList.toggle('active', target === 'login');
+      signupForm.classList.toggle('active', target === 'signup');
+      clearMsg();
+    });
+  });
+
+  function goToDashboard() { window.location.href = '/dashboard.html'; }
+
+  function translateError(err) {
+    if (err instanceof MissingIdentityError)
+      return 'Identity ainda não está ativo. Ative no painel da Netlify em Identity.';
+    if (err instanceof AuthError) {
+      switch (err.status) {
+        case 400: case 401: return 'E-mail ou senha inválidos.';
+        case 403: return 'Cadastros desativados. Peça um convite ao administrador.';
+        case 422: return 'Entrada inválida. Verifique e-mail e senha (mín. 6).';
+        case 404: return 'Usuário não encontrado.';
+        default: return err.message || 'Erro de autenticação.';
+      }
+    }
+    return err?.message || 'Erro inesperado.';
+  }
+
+  try {
+    const result = await handleAuthCallback();
+    if (result) {
+      if (result.type === 'confirmation') {
+        showMsg('E-mail confirmado. Redirecionando...', 'info');
+        setTimeout(goToDashboard, 800);
+      } else if (result.type === 'recovery') {
+        const newPass = prompt('Digite uma nova senha (mínimo 6 caracteres):');
+        if (newPass && newPass.length >= 6) {
+          await updateUser({ password: newPass });
+          showMsg('Senha atualizada. Redirecionando...', 'info');
+          setTimeout(goToDashboard, 800);
+        }
+      }
+    }
+  } catch (err) { showMsg(translateError(err), 'error'); }
+
+  const existing = await getUser();
+  if (existing) goToDashboard();
+
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault(); clearMsg();
+    loginBtn.disabled = true;
+    loginBtn.innerHTML = '<span class="spinner"></span>Entrando...';
+    try {
+      await login(
+        document.getElementById('loginEmail').value.trim(),
+        document.getElementById('loginPass').value
+      );
+      goToDashboard();
+    } catch (err) { showMsg(translateError(err), 'error'); }
+    finally { loginBtn.disabled = false; loginBtn.textContent = 'Entrar'; }
+  });
+
+  signupForm.addEventListener('submit', async (e) => {
+    e.preventDefault(); clearMsg();
+    signupBtn.disabled = true;
+    signupBtn.innerHTML = '<span class="spinner"></span>Criando...';
+    try {
+      const user = await signup(
+        document.getElementById('signupEmail').value.trim(),
+        document.getElementById('signupPass').value,
+        { full_name: document.getElementById('signupName').value.trim() }
+      );
+      if (user.emailVerified) {
+        showMsg('Conta criada. Redirecionando...', 'info');
+        setTimeout(goToDashboard, 600);
+      } else {
+        showMsg('Conta criada! Verifique seu e-mail para confirmar antes de entrar.', 'info');
+      }
+    } catch (err) { showMsg(translateError(err), 'error'); }
+    finally { signupBtn.disabled = false; signupBtn.textContent = 'Criar conta'; }
+  });
+
+  document.getElementById('forgotBtn').addEventListener('click', async () => {
+    const email = document.getElementById('loginEmail').value.trim() || prompt('Digite o e-mail para recuperação:');
+    if (!email) return;
+    try {
+      await requestPasswordRecovery(email);
+      showMsg('Enviamos um link de recuperação para seu e-mail.', 'info');
+    } catch (err) { showMsg(translateError(err), 'error'); }
+  });
+</script>
+</body>
+</html>
