@@ -1,0 +1,87 @@
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  updateProfile,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDXh7_Lh_AeLdIJ0LsiViKo5pnRgl7hPAg",
+  authDomain: "finaceiro-dcf5a.firebaseapp.com",
+  projectId: "finaceiro-dcf5a"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// ELEMENTOS
+const msgEl = document.getElementById('msg');
+const loginForm = document.getElementById('loginForm');
+const signupForm = document.getElementById('signupForm');
+
+// MSG
+function showMsg(text, type) {
+  msgEl.textContent = text;
+  msgEl.className = 'msg show ' + type;
+}
+
+// AUTO LOGIN
+onAuthStateChanged(auth, (user) => {
+  if (user) window.location.href = "/dashboard.html";
+});
+
+// LOGIN
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  try {
+    await signInWithEmailAndPassword(
+      auth,
+      document.getElementById("loginEmail").value,
+      document.getElementById("loginPass").value
+    );
+    window.location.href = "/dashboard.html";
+  } catch (err) {
+    console.log(err);
+    showMsg(err.code, "error");
+  }
+});
+
+// CADASTRO
+signupForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  try {
+    const userCred = await createUserWithEmailAndPassword(
+      auth,
+      document.getElementById("signupEmail").value,
+      document.getElementById("signupPass").value
+    );
+
+    await updateProfile(userCred.user, {
+      displayName: document.getElementById("signupName").value
+    });
+
+    showMsg("Conta criada com sucesso!", "info");
+  } catch (err) {
+    console.log(err);
+    showMsg(err.code, "error");
+  }
+});
+
+// RECUPERAR SENHA
+document.getElementById("forgotBtn").addEventListener("click", async () => {
+  const email = document.getElementById("loginEmail").value;
+  if (!email) return showMsg("Digite o email primeiro", "error");
+
+  try {
+    await sendPasswordResetEmail(auth, email);
+    showMsg("Email de recuperação enviado!", "info");
+  } catch (err) {
+    console.log(err);
+    showMsg(err.code, "error");
+  }
+});
+</script>
